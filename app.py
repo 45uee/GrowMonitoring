@@ -1,15 +1,26 @@
 import cv2
 import numpy as np
-from utils import plant, light_intensity
+from utils import plant_measurements, env_measurements
+from picamera2 import Picamera2
 
-frame = cv2.imread('frame.jpg')
+
+def define_picam():
+    picam2 = Picamera2()
+    picam2.preview_configuration.main.size = (1920, 1080)
+    picam2.preview_configuration.main.format = "RGB888"
+    picam2.preview_configuration.controls.FrameRate = 60
+    picam2.preview_configuration.align()
+
+    #picam2.configure(picam2.create_preview_configuration(main={"format": 'RGB888', "size": (640, 480)}))
+    return picam2
+
 
 if __name__ == '__main__':
-    
-    print("Plant area: ", plant.plant_area(frame))
-    print("Plant ratio: ", plant.plant_ratio(frame))
-    print("Light: ", light_intensity.light_intensity(frame))
+    picam2 = define_picam()
+    frame = picam2.capture_array()
 
-    cv2.imshow('mask', plant.plant_mask(frame))
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    print("Plant area: ", plant_measurements.plant_area(frame))
+    print("Plant ratio: ", plant_measurements.plant_ratio(frame))
+    print("Light intensity: ", env_measurements.light_intensity(frame))
+
+    cv2.imwrite('frame.jpg', frame)
