@@ -2,6 +2,7 @@ import cv2
 import numpy as np
 from utils import plant_measurements, env_measurements
 from picamera2 import Picamera2
+import time
 
 
 def define_picam():
@@ -17,10 +18,12 @@ def define_picam():
 
 if __name__ == '__main__':
     picam2 = define_picam()
+    picam2.start()
+
     frame = picam2.capture_array()
 
     print("Plant area: ", plant_measurements.plant_area(frame))
     print("Plant ratio: ", plant_measurements.plant_ratio(frame))
     print("Light intensity: ", env_measurements.light_intensity(frame))
 
-    cv2.imwrite('frame.jpg', frame)
+    cv2.imwrite(f"/home/user/img/{time.time()}_img.jpg", frame)
