@@ -21,6 +21,7 @@ if __name__ == '__main__':
     picam2.start()
 
     frame = picam2.capture_array()
+    frame = cv2.flip(frame, 0)
 
     print("Plant area: ", plant_measurements.plant_area(frame))
     print("Plant ratio: ", plant_measurements.plant_ratio(frame))
